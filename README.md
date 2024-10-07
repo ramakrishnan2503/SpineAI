@@ -4,7 +4,7 @@
 
 **SpineAI** is a powerful application designed for detecting and classifying degenerative spine conditions using MRI data. Leveraging advanced computer vision and AI techniques, SpineAI aims to assist medical professionals in identifying spine-related issues more efficiently and accurately. 
 
-While the core functionality revolves around medical image analysis, SpineAI also includes a specialized chatbot that helps users with spine-related information. However, the chatbot serves as a supplementary feature.
+While the core functionality revolves around medical image analysis, SpineAI also includes a specialized chatbot that helps users with spine-related information. The aim of this project is to develop a model for detecting and classifying degenerative spine conditions accurately.
 
 ## Core Features
 
