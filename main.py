@@ -8,7 +8,7 @@ from tensorflow import keras
 from app import app
 
 # Load the CNN model
-model = joblib.load(r'C:\Users\Ramakrishnan\Downloads\cnn.h5')
+model = joblib.load(r"D:\SpineAI\cnn.h5")
 
 # Function to load and preprocess DICOM images
 def load_dicom_image(file, img_size=(128, 128)):
