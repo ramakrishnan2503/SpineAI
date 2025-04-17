@@ -7,19 +7,16 @@ import time
 from tensorflow import keras
 from app import app
 
-# Load the CNN model
 model = joblib.load(r"D:\SpineAI\cnn.h5")
 
-# Function to load and preprocess DICOM images
 def load_dicom_image(file, img_size=(128, 128)):
     dicom = pydicom.dcmread(file)
     img = dicom.pixel_array
-    img = img / np.max(img) if np.max(img) > 0 else img  # Normalize
+    img = img / np.max(img) if np.max(img) > 0 else img  
     img_resized = cv2.resize(img, img_size)
-    img_resized = np.stack((img_resized,) * 3, axis=-1)  # Convert to 3 channels
+    img_resized = np.stack((img_resized,) * 3, axis=-1)  
     return img_resized
 
-# Function to load and preprocess standard images (JPEG/PNG)
 def load_standard_image(file, img_size=(128, 128)):
     file_data = file.read()
     file_bytes = np.asarray(bytearray(file_data), dtype=np.uint8)
@@ -28,10 +25,9 @@ def load_standard_image(file, img_size=(128, 128)):
         st.error("Error decoding the image. Please upload a valid image file.")
         return None
     img_resized = cv2.resize(img, img_size)
-    img_resized = img_resized / 255.0  # Normalize
+    img_resized = img_resized / 255.0  
     return img_resized
 
-# General preprocessing function
 def preprocess_image(file, file_type, img_size=(128, 128)):
     if file_type == "dcm":
         img = load_dicom_image(file, img_size)
@@ -39,18 +35,15 @@ def preprocess_image(file, file_type, img_size=(128, 128)):
         img = load_standard_image(file, img_size)
         if img is None:
             return None
-    img = np.expand_dims(img, axis=0)  # Add batch dimension
+    img = np.expand_dims(img, axis=0)  
     return img
 
-# Function to get prediction label
 def get_prediction_label(predicted_class):
     labels = {0: "normal", 1: "moderate", 2: "severe"}
     return labels.get(predicted_class, "Unknown")
 
-# Set up the Streamlit app layout
 st.set_page_config(page_title="Spine AI",page_icon="🩺", layout="wide")
 
-# Typing animation for "Spine AI" on the Home page
 def animated_title(text, delay=0.1):
     title_container = st.empty()
     displayed_text = ""
@@ -59,7 +52,6 @@ def animated_title(text, delay=0.1):
         title_container.markdown(f"<h1 style='text-align: center; color: #4A90E2;'>{displayed_text}</h1>", unsafe_allow_html=True)
         time.sleep(delay)
 
-# Sidebar Navigation with Home as a default option
 st.sidebar.title("Navigation")
 
 page = st.sidebar.selectbox("Choose a page:", ["Home", "Prediction", "Chatbot", "Document Generation"])
@@ -112,7 +104,7 @@ elif page == "Prediction":
                     uploaded_file.seek(0)
                     original_img = load_standard_image(uploaded_file)
 
-                st.image(original_img, caption="Uploaded Image", use_container_width=True)
+                st.image(original_img, caption="Uploaded Image", use_column_width=True)
                 if label == "severe":
                     st.markdown(f"<h2 style='text-align: center; color: #FF0000;'>Prediction: {label.capitalize()}</h2>", unsafe_allow_html=True)
                 elif label == "normal":
@@ -131,9 +123,8 @@ elif page == "Chatbot":
     st.markdown("<p style='text-align: center;'>Ask any questions about spine conditions, image classification, and more!</p>", unsafe_allow_html=True)
     
     ### ************************** ###
-    ###app()
-    # Placeholder for chatbot implementation
-    st.write("Chatbot coming soon! Here you’ll be able to interact with our AI for assistance on spine condition classifications and app usage.")
+    app()
+    #st.write("Chatbot coming soon! Here you’ll be able to interact with our AI for assistance on spine condition classifications and app usage.")
 
 # Documentation Page Content
 elif page == "Document Generation":
