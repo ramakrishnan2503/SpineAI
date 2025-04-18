@@ -1,46 +1,19 @@
 import numpy as np
-import pydicom
-import cv2
 import streamlit as st
 import joblib
+from PIL import Image
 import time
 from tensorflow import keras
 from app import app
+from report import generate_report
+from db_helper import save_data,get_next_patient_id
+
+
+from prediction import *
 
 model = joblib.load(r"D:\SpineAI\cnn.h5")
 
-def load_dicom_image(file, img_size=(128, 128)):
-    dicom = pydicom.dcmread(file)
-    img = dicom.pixel_array
-    img = img / np.max(img) if np.max(img) > 0 else img  
-    img_resized = cv2.resize(img, img_size)
-    img_resized = np.stack((img_resized,) * 3, axis=-1)  
-    return img_resized
 
-def load_standard_image(file, img_size=(128, 128)):
-    file_data = file.read()
-    file_bytes = np.asarray(bytearray(file_data), dtype=np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    if img is None:
-        st.error("Error decoding the image. Please upload a valid image file.")
-        return None
-    img_resized = cv2.resize(img, img_size)
-    img_resized = img_resized / 255.0  
-    return img_resized
-
-def preprocess_image(file, file_type, img_size=(128, 128)):
-    if file_type == "dcm":
-        img = load_dicom_image(file, img_size)
-    else:
-        img = load_standard_image(file, img_size)
-        if img is None:
-            return None
-    img = np.expand_dims(img, axis=0)  
-    return img
-
-def get_prediction_label(predicted_class):
-    labels = {0: "normal", 1: "moderate", 2: "severe"}
-    return labels.get(predicted_class, "Unknown")
 
 st.set_page_config(page_title="Spine AI",page_icon="🩺", layout="wide")
 
@@ -129,7 +102,49 @@ elif page == "Chatbot":
 # Documentation Page Content
 elif page == "Document Generation":
     st.markdown("<h1 style='text-align: center; color: #4A90E2;'>📄 Spine AI - Document Generation</h1>", unsafe_allow_html=True)
-    st.markdown("Coming Sooon!! Her you will be able to get personalized documents based on patient history")
+    
+    st.title("Lumbar Spine Disease Report Generator")
+    st.markdown("### Generate a professional report for lumbar spine disease")
+
+    user_type = st.radio("Select User Type:", ["Old User", "New User"])
+
+    if user_type == "Old User":
+        patient_id = st.text_input("Enter Patient ID:")
+        ct_scan_image = st.file_uploader("Upload Spine CT Scan Image", type=["dcm", "png", "jpg", "jpeg"])
+
+        if st.button("Generate Report"):
+            if ct_scan_image is not None:
+                image = Image.open(ct_scan_image)
+                generate_report(patient_id, ct_scan_image)
+            else:
+                st.error("Please upload a CT scan image.")
+    else:
+        st.subheader("Enter New Patient Details")
+
+        next_patient_id = get_next_patient_id()  
+        st.markdown(f"**Generated Patient ID:** `{next_patient_id}`")
+
+        name = st.text_input("Full Name")
+        age = st.number_input("Age", min_value=1, max_value=120, step=1)
+        gender = st.selectbox("Gender", ["Male", "Female", "Other"])
+        ct_scan_image = st.file_uploader("Upload Spine CT Scan Image", type=["dcm", "png", "jpg", "jpeg"])
+
+        if st.button("Generate Report for New User"):
+            if name and age and gender and ct_scan_image:
+                image = Image.open(ct_scan_image)
+                
+                # Classify image
+                file_type = ct_scan_image.name.split('.')[-1].lower()
+                severity = classify(ct_scan_image, file_type)
+
+                # Save new patient data
+                save_data(next_patient_id, name=name, age=age, gender=gender, severity=severity)
+
+                # Regenerate the report
+                generate_report(next_patient_id, ct_scan_image)
+            else:
+                st.error("Please fill all fields and upload an image.")
+    #st.markdown("Coming Sooon!! Her you will be able to get personalized documents based on patient history")
     #st.write("""
     #    ## Documentation
     #    - *Model Information*: Our model uses Convolutional Neural Networks (CNN) to analyze and classify images.

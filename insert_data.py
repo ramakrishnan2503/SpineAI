@@ -3,39 +3,39 @@ from db_helper import add_patient
 def insert_dummy_data():
     dummy_patients = [
         {
-            "patient_id": "P001",
+            "patient_id": "1",
             "name": "John Doe",
             "age": 45,
             "gender": "Male",
-            "severity_history": "normal, mild"  
+            "severity_history": "2024-03-01 10:00:00 normal,2024-03-15 14:30:00 mild"
         },
         {
-            "patient_id": "P002",
+            "patient_id": "2",
             "name": "Jane Smith",
             "age": 50,
             "gender": "Female",
-            "severity_history": "severe, mild"
+            "severity_history": "2024-02-20 09:45:00 severe,2024-03-10 13:20:00 mild"
         },
         {
-            "patient_id": "P003",
+            "patient_id": "3",
             "name": "Alice Johnson",
             "age": 60,
             "gender": "Female",
-            "severity_history": "mild, severe"
+            "severity_history": "2024-01-25 08:15:00 mild,2024-03-18 16:45:00 severe"
         },
         {
-            "patient_id": "P004",
+            "patient_id": "4",
             "name": "Bob Brown",
             "age": 38,
             "gender": "Male",
-            "severity_history": "normal"
+            "severity_history": "2024-04-10 11:00:00 normal"
         },
         {
-            "patient_id": "P005",
+            "patient_id": "5",
             "name": "Charlie Davis",
             "age": 55,
             "gender": "Male",
-            "severity_history": "normal, severe"
+            "severity_history": "2024-02-28 10:30:00 normal,2024-04-01 15:00:00 severe"
         }
     ]
 
