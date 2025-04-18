@@ -104,7 +104,7 @@ elif page == "Document Generation":
     st.markdown("<h1 style='text-align: center; color: #4A90E2;'>📄 Spine AI - Document Generation</h1>", unsafe_allow_html=True)
     
     st.title("Lumbar Spine Disease Report Generator")
-    st.markdown("### Generate a professional report for lumbar spine disease")
+    st.markdown("### Generate a professional report for your condition")
 
     user_type = st.radio("Select User Type:", ["Old User", "New User"])
 
