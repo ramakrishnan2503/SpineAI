@@ -1,5 +1,3 @@
-# init_db.py
-
 import sqlite3
 
 def init_db():
@@ -11,11 +9,7 @@ def init_db():
             name TEXT NOT NULL,
             age INTEGER NOT NULL,
             gender TEXT NOT NULL,
-            disease TEXT NOT NULL,
-            medical_history TEXT,
-            allergies TEXT,
-            medications TEXT,
-            recent_procedures TEXT
+            severity_history TEXT
         )
     ''')
     conn.commit()

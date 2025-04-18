@@ -1,8 +1,7 @@
-# db_helper.py
-
 import sqlite3
+import pandas as pd
 
-def add_patient(patient_id, name, age, gender, disease, medical_history, allergies, medications, recent_procedures):
+def add_patient(patient_id, name, age, gender, severity_history):
     """
     Adds a new patient to the patients table.
     
@@ -11,33 +10,37 @@ def add_patient(patient_id, name, age, gender, disease, medical_history, allergi
     - name (str): Full name of the patient.
     - age (int): Age of the patient.
     - gender (str): Gender of the patient.
-    - disease (str): Diagnosed lumbar spine disease.
-    - medical_history (str): Relevant medical history.
-    - allergies (str): Known allergies.
-    - medications (str): Current medications.
-    - recent_procedures (str): Recent medical procedures.
+    - severeity_history (str): List of previous medical history
     
     Returns:
     - bool: True if insertion is successful, False otherwise.
     """
+    
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
+    
     try:
         c.execute('''
             INSERT INTO patients (
-                patient_id, name, age, gender, disease, medical_history, 
-                allergies, medications, recent_procedures
+                patient_id, name, age, gender, severity_history
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (patient_id, name, age, gender, disease, medical_history, allergies, medications, recent_procedures))
+            VALUES (?, ?, ?, ?, ?)
+        ''', (patient_id, name, age, gender, severity_history))
         conn.commit()
         success = True
     except sqlite3.IntegrityError:
-        # This exception is raised if the patient_id already exists
         success = False
     finally:
         conn.close()
+        
     return success
+
+def get_patient_data(patient_id):
+    conn = sqlite3.connect('patients.db')  # Adjust the database name as necessary
+    query = "SELECT * FROM patients WHERE patient_id = ?"
+    patient_data = pd.read_sql(query, conn, params=(patient_id,))
+    conn.close()
+    return patient_data
 
 def fetch_patient_by_id(patient_id):
     """
@@ -55,6 +58,7 @@ def fetch_patient_by_id(patient_id):
     patient = c.fetchone()
     conn.close()
     return patient
+
 
 def fetch_all_patients():
     """
