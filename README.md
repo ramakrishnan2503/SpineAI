@@ -30,7 +30,7 @@ While the core functionality revolves around medical image analysis, SpineAI als
 
 ### 2. Install Dependencies
 ```bash
-  pip install -r requirements.txt
+  pip install -r requirement.txt
 ```
 
 ### 3. Run the Application
