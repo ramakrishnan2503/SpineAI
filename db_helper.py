@@ -76,7 +76,6 @@ def fetch_all_patients():
     return patients
 
 def save_data(patient_id, severity, name=None, age=None, gender=None):
-    import sqlite3
     conn = sqlite3.connect("patients.db")
     cursor = conn.cursor()
 
@@ -97,7 +96,6 @@ def save_data(patient_id, severity, name=None, age=None, gender=None):
     
 
 def get_next_patient_id():
-    import sqlite3
     conn = sqlite3.connect("patients.db")
     cursor = conn.cursor()
     cursor.execute("SELECT MAX(CAST(patient_id AS INTEGER)) FROM patients")
